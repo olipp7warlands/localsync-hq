@@ -1,7 +1,8 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, setToken } from '../api/client';
-import { AuthResponse } from '@localsync/shared';
+
+interface AuthResponse { token: string; }
 
 export default function Login() {
   const navigate = useNavigate();

@@ -1,8 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api/client';
-import { DashboardStats } from '@localsync/shared';
 import StatsBar from '../components/StatsBar';
+
+interface DashboardStats {
+  totalLocations: number;
+  avgHealthScore: number;
+  openAlerts: number;
+  syncedListings: number;
+  driftedListings: number;
+  locationHealth: Array<{ id: string; name: string; city: string; state: string; healthScore: number }>;
+  recentAlerts: unknown[];
+}
 import AlertFeed, { AlertWithLocation } from '../components/AlertFeed';
 import HealthScoreBadge from '../components/HealthScoreBadge';
 import AddLocationModal from '../components/AddLocationModal';
@@ -93,7 +102,7 @@ export default function Dashboard() {
             Location Health
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            {data.locationHealth.map((loc) => (
+            {data.locationHealth.map((loc: { id: string; name: string; city: string; state: string; healthScore: number }) => (
               <Link
                 key={loc.id}
                 to={`/locations/${loc.id}`}
