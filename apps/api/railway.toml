@@ -1,6 +1,0 @@
-[build]
-builder = "nixpacks"
-buildCommand = "cd ../.. && npm ci && npm run build --workspace=apps/api"
-
-[deploy]
-startCommand = "node dist/index.js"
