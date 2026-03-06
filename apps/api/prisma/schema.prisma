@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users     User[]
+  locations Location[]
+  alerts    Alert[]
+  syncJobs  SyncJob[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  orgId        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  org Organization @relation(fields: [orgId], references: [id])
+}
+
+model Location {
+  id            String   @id @default(cuid())
+  orgId         String
+  name          String
+  city          String
+  state         String
+  sourceOfTruth Json
+  healthScore   Float    @default(100)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  org      Organization @relation(fields: [orgId], references: [id])
+  listings Listing[]
+  alerts   Alert[]
+  syncJobs SyncJob[]
+}
+
+model Listing {
+  id           String        @id @default(cuid())
+  locationId   String
+  platform     String
+  status       String        @default("pending")
+  data         Json
+  driftFields  String[]      @default([])
+  lastSyncedAt DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  location Location @relation(fields: [locationId], references: [id])
+  alerts   Alert[]
+}
+
+model Alert {
+  id         String    @id @default(cuid())
+  orgId      String
+  locationId String
+  listingId  String
+  field      String
+  platform   String
+  expected   String
+  actual     String
+  severity   String    @default("medium")
+  status     String    @default("open")
+  resolvedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  org      Organization @relation(fields: [orgId], references: [id])
+  location Location     @relation(fields: [locationId], references: [id])
+  listing  Listing      @relation(fields: [listingId], references: [id])
+}
+
+model SyncJob {
+  id         String    @id @default(cuid())
+  orgId      String
+  locationId String
+  platform   String?
+  status     String    @default("queued")
+  error      String?
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  org      Organization @relation(fields: [orgId], references: [id])
+  location Location     @relation(fields: [locationId], references: [id])
+}

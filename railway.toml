@@ -1,0 +1,22 @@
+[build]
+builder = "nixpacks"
+
+[[services]]
+name = "api"
+source = "apps/api"
+
+[services.build]
+buildCommand = "npm run build"
+
+[services.deploy]
+startCommand = "node dist/index.js"
+
+[[services]]
+name = "web"
+source = "apps/web"
+
+[services.build]
+buildCommand = "npm run build"
+
+[services.deploy]
+startCommand = "npx serve dist -p $PORT"
