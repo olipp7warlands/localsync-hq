@@ -28,7 +28,7 @@ async function processJob(job: Job<SyncJobData>): Promise<void> {
     if (!listing) throw new Error(`Listing for ${platform} not found at ${locationId}`);
 
     const adapter = getAdapter(platform);
-    const sourceOfTruth = location.sourceOfTruth as ListingData;
+    const sourceOfTruth = location.sourceOfTruth as unknown as ListingData;
 
     // Push source-of-truth data to the platform
     await adapter.updateListing(locationId, sourceOfTruth);
@@ -39,7 +39,7 @@ async function processJob(job: Job<SyncJobData>): Promise<void> {
       data: {
         status: 'synced',
         driftFields: [],
-        data: sourceOfTruth,
+        data: sourceOfTruth as unknown as object,
         lastSyncedAt: new Date(),
       },
     });

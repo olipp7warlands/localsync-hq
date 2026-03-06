@@ -44,7 +44,7 @@ export class MockAdapter implements PlatformAdapter {
     }
 
     // Simulate the remote platform having random drift
-    return applyRandomDrift(listing.data as ListingData);
+    return applyRandomDrift(listing.data as unknown as ListingData);
   }
 
   async updateListing(_locationId: string, _data: ListingData): Promise<void> {

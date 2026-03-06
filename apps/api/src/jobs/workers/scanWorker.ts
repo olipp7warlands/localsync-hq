@@ -37,11 +37,11 @@ async function processJob(job: Job<ScanJobData>): Promise<void> {
 
   if (!location) throw new Error(`Location ${locationId} not found`);
 
-  const sourceOfTruth = location.sourceOfTruth as ListingData;
+  const sourceOfTruth = location.sourceOfTruth as unknown as ListingData;
   let driftedCount = 0;
 
   for (const listing of location.listings) {
-    const listingData = listing.data as ListingData;
+    const listingData = listing.data as unknown as ListingData;
     const driftFields = diffFields(sourceOfTruth, listingData);
 
     if (driftFields.length > 0) {
